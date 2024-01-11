@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import BarChart from './barchart';
+import Filter from './filter';
 
-function App() {
+const App = () => {
+  const [data, setData] = useState([]);
+  const [filterTopic, setFilterTopic] = useState('');
+  const [filterYear, setFilterYear] = useState('');
+  // Add more filters as needed
+
+  // Fetch data from JSON file
+  useEffect(() => {
+    fetch('jsondata.json')
+      .then(response => response.json())
+      .then(setData);
+  }, []);
+
+  // Filter data based on selected value
+  const filteredData = data.filter(d => d.topic === filterTopic && d.year === filterYear /* && other conditions based on filters */);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Filter options={['gas', 'oil', 'consumption']} value={filterTopic} onChange={setFilterTopic} />
+      <Filter options={['2018', '2019', '2020']} value={filterYear} onChange={setFilterYear} />
+      // Add more Filter components as needed
+      <BarChart data={filteredData} />
     </div>
   );
-}
+};
 
 export default App;
